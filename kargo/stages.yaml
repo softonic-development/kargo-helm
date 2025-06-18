@@ -1,3 +1,4 @@
+---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
@@ -17,16 +18,20 @@ spec:
       name: features
     sources:
       direct: true
+  - origin:
+      kind: Warehouse
+      name: portall
+    sources:
+      direct: true
   promotionTemplate:
     spec:
       steps:
-      - task:
-          name: promote
-        vars:
-        - name: envPath
-          value: env/dev
-        - name: argocdApp
-          value: kargo-helm-dev
+      - uses: git-clone
+        config:
+          repoURL: https://github.com/akuity/kargo-helm.git
+          checkout:
+          - branch: main
+            path: ./src
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1

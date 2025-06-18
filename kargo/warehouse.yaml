@@ -1,3 +1,4 @@
+---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
@@ -24,3 +25,15 @@ spec:
       repoURL: https://github.com/akuity/kargo-helm.git
       includePaths:
       - base/feature-flags.yaml
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: portall
+  namespace: kargo-helm
+spec:
+  subscriptions:
+  - image:
+      repoURL: registry.softonic.io/portall/web
+      imageSelectionStrategy: SemVer
+      discoveryLimit: 5
