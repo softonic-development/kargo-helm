@@ -1,0 +1,86 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: PromotionTask
+metadata:
+  name: promote
+spec:
+  vars:
+  - name: repoURL
+    value: https://github.com/softonic-development/portall-manifests-roldyx
+  - name: image
+    value: registry.softonic.io/portall/web
+  - name: branch
+    value: main
+  - name: envPath
+    value: dev
+  - name: argocdApp
+  - name: host
+
+
+  steps:
+  - uses: git-clone
+    as: clone
+    config:
+      repoURL: ${{ vars.repoURL }}
+      checkout:
+      - branch: main
+        path: ./src
+      - branch: stage/${{ ctx.stage }}
+        create: true
+        path: ./out
+
+  - uses: git-clear
+    config:
+      path: ./out
+
+  - uses: yaml-update
+    as: update-image
+    config:
+      path: ./src/${{ vars.envPath }}/values.yaml
+      updates:
+      - key: softonicApp.image.tag
+        value: ${{ imageFrom( vars.image ).Tag }}
+
+  - uses: yaml-update
+    as: update-ingress-name
+    config:
+      path: ./src/${{ vars.envPath }}/templates/ingress.yaml
+      updates:
+      - key: spec.rules.0.host
+        value: ${{ vars.host }}
+      - key: spec.tls.0.hosts.0
+        value: ${{ vars.host }}
+
+  - uses: copy
+    config:
+      inPath: ./src/${{ vars.envPath }}
+      outPath: ./out/${{ vars.envPath }}
+
+  # - uses: helm-update-chart
+  #   config:
+  #     path: ./src/${{ vars.envPath }}
+  #     charts:
+  #     - repository: https://chartmuseum.softonic.io
+  #       name: softonic-app
+  #       version: 0.33.0
+  # - uses: helm-template
+  #   config:
+  #     path: ./src/${{ vars.envPath }}
+  #     valuesFiles:
+  #     - ./out/${{ vars.envPath }}/values.yaml
+  #     outPath: ./out/manifests.yaml
+  #     releaseName: portall
+  #     namespace: portall-dev
+  #     #buildDependencies: true
+  - uses: git-commit
+    as: commit
+    config:
+      path: ./out
+      message: ${{ task.outputs['update-image'].commitMessage }}
+  - uses: git-push
+    config:
+      path: ./out
+  - uses: argocd-update
+    config:
+      apps:
+      - name: ${{ vars.argocdApp }}
+

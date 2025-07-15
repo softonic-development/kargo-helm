@@ -1,0 +1,14 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: portall-git
+spec:
+  interval: 1h
+  subscriptions:
+  - git:
+      branch: main
+      commitSelectionStrategy: NewestFromBranch
+      discoveryLimit: 5
+      repoURL: https://github.com/softonic-development/portall-manifests-roldyx.git
+      strictSemvers: true

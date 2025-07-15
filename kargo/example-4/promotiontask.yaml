@@ -1,0 +1,67 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: PromotionTask
+metadata:
+  name: promote
+spec:
+  vars:
+  - name: repoURL
+    value: https://github.com/softonic-development/portall-manifests
+  - name: sourceBranch
+    value: main
+  - name: image
+    value: registry.softonic.io/portall/web
+  - name: branch
+    value: main
+  - name: envPath
+    value: dev
+  - name: argocdApp
+
+
+  steps:
+  - uses: git-clone
+    as: clone
+    config:
+      repoURL: ${{ vars.repoURL }}
+      checkout:
+      - commit: ${{ commitFrom(vars.repoURL).ID }}
+        path: ./src
+      - branch: main
+        create: true
+        path: ./out
+
+  # - uses: git-clear
+  #   config:
+  #     path: ./out
+
+  - uses: yaml-update
+    as: update-image
+    config:
+      path: ./src/${{ vars.envPath }}/values.yaml
+      updates:
+      - key: softonicApp.image.tag
+        value: ${{ imageFrom( vars.image ).Tag }}
+
+  - uses: helm-template
+    config:
+      path: ./src/${{ vars.envPath }}
+      valuesFiles:
+      - ./src/${{ vars.envPath }}/values.yaml
+      outPath: ./out/stages/${{ vars.stage }}/manifests.yaml
+      releaseName: portall
+      namespace: portall-dev
+
+  - uses: git-commit
+    as: commit
+    config:
+      path: ./out
+      message: ${{ task.outputs['update-image'].commitMessage }}
+
+  - uses: git-push
+    config:
+      path: ./out
+
+  - uses: argocd-update
+    config:
+      apps:
+      - name: ${{ vars.argocdApp }}
+

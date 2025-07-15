@@ -1,0 +1,29 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: kargo-helm
+  annotations:
+    kargo.akuity.io/color: red
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: portall
+    sources:
+      direct: true
+  promotionTemplate:
+    spec:
+      vars:
+        - name: envPath
+          value: helm/portall/dev
+        - name: stage
+          value: dev
+        - name: argocdApp
+          value: portall-europe-dev
+      steps:
+      - task:
+          name: promote
+        as: promote-to-dev
+

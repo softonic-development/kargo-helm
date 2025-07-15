@@ -1,0 +1,16 @@
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+metadata:
+  name: portall-example-roldyx
+spec:
+  promotionPolicies:
+  - stageSelector:
+      name: dev
+    autoPromotionEnabled: true
+  - stageSelector:
+      name: staging
+    autoPromotionEnabled: false
+  - stageSelector:
+      name: prod
+    autoPromotionEnabled: false

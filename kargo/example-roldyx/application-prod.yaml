@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    kargo.akuity.io/authorized-stage: portall-example-roldyx:prod
+  labels:
+    softonic.io/group: tooling
+    softonic.io/service: portall
+    softonic.io/site: global
+  name: portall-europe-prod-roldyx
+  namespace: argocd
+spec:
+  destination:
+    namespace: portall-prod-roldyx
+    server: https://34.79.86.5
+  project: portall
+  source:
+    helm:
+      releaseName: portall
+      valueFiles:
+      - values.yaml
+    path: ./helm/portall/prod
+    repoURL: git@github.com:softonic-development/portall-manifests-roldyx.git
+    targetRevision: stage/prod
+  syncPolicy:
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+      limit: 5
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
