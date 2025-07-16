@@ -10,5 +10,5 @@ spec:
       branch: main
       commitSelectionStrategy: NewestFromBranch
       discoveryLimit: 5
-      repoURL: https://github.com/softonic-development/portall-manifests-roldyx.git
+      repoURL: https://github.com/softonic-development/portall-manifests.git
       strictSemvers: true

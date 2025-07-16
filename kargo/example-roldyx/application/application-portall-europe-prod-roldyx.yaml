@@ -20,8 +20,8 @@ spec:
       valueFiles:
       - values.yaml
     path: ./helm/portall/prod
-    repoURL: git@github.com:softonic-development/portall-manifests-roldyx.git
-    targetRevision: stage/prod
+    repoURL: git@github.com:softonic-development/portall-manifests.git
+    targetRevision: stage/prod-roldyx
   syncPolicy:
     retry:
       backoff:

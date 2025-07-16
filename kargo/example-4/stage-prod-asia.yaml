@@ -2,10 +2,10 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
-  name: prod
+  name: prod-asia
   namespace: kargo-helm
   annotations:
-    kargo.akuity.io/color: green
+    kargo.akuity.io/color: blue
 spec:
   requestedFreight:
   - origin:
@@ -18,11 +18,11 @@ spec:
     spec:
       vars:
         - name: envPath
-          value: helm/portall/prod-workshop
+          value: helm/portall/prod
         - name: stage
           value: prod
         - name: argocdApp
-          value: portall-europe-prod
+          value: portall-asia
       steps:
       - task:
           name: promote

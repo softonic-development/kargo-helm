@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  annotations:
+    kargo.akuity.io/authorized-stage: kargo-helm:dev
+  labels:
+    softonic.io/group: tooling
+    softonic.io/service: portall
+    softonic.io/site: global
+  name: portall-europe-dev
+  namespace: argocd
+spec:
+  destination:
+    namespace: portall-dev
+    server: https://34.79.86.5
+  project: portall
+  source:
+    path: .
+    repoURL: git@github.com:softonic-development/portall-manifests.git
+    targetRevision: stage/dev
+  syncPolicy:
+    retry:
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+      limit: 5
+    syncOptions:
+    - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true

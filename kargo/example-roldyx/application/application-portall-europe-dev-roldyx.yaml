@@ -19,9 +19,9 @@ spec:
       releaseName: portall
       valueFiles:
       - values.yaml
-    path: ./helm/portall/dev
-    repoURL: git@github.com:softonic-development/portall-manifests-roldyx.git
-    targetRevision: stage/dev
+    path: ./helm/portall/dev-roldyx
+    repoURL: git@github.com:softonic-development/portall-manifests.git
+    targetRevision: stage/dev-roldyx
   syncPolicy:
     retry:
       backoff:

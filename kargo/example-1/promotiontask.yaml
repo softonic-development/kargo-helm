@@ -6,6 +6,8 @@ spec:
   vars:
   - name: repoURL
     value: https://github.com/softonic-development/portall-manifests
+  - name: sourceBranch
+    value: main
   - name: image
     value: registry.softonic.io/portall/web
   - name: branch
@@ -13,6 +15,7 @@ spec:
   - name: envPath
     value: dev
   - name: argocdApp
+
 
   steps:
   - uses: git-clone
@@ -22,7 +25,7 @@ spec:
       checkout:
       - branch: main
         path: ./src
-      - branch: stage/${{ vars.stage }}
+      - branch: stage/${{ ctx.stage }}
         create: true
         path: ./out
 
@@ -38,19 +41,25 @@ spec:
       - key: softonicApp.image.tag
         value: ${{ imageFrom( vars.image ).Tag }}
 
-  - uses: copy
+  - uses: helm-template
     config:
-      inPath: ./src/${{ vars.envPath }}
-      outPath: ./out/${{ vars.envPath }}
+      path: ./src/${{ vars.envPath }}
+      valuesFiles:
+      - ./src/${{ vars.envPath }}/values.yaml
+      outPath: ./out/manifests.yaml
+      releaseName: portall
+      namespace: portall-dev
 
   - uses: git-commit
     as: commit
     config:
       path: ./out
       message: ${{ task.outputs['update-image'].commitMessage }}
+
   - uses: git-push
     config:
       path: ./out
+
   - uses: argocd-update
     config:
       apps:

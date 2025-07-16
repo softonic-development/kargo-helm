@@ -21,13 +21,11 @@ spec:
     spec:
       vars:
         - name: envPath
-          value: helm/portall/dev
+          value: helm/portall/dev-roldyx
         - name: stage
-          value: dev
+          value: dev-roldyx
         - name: argocdApp
           value: portall-europe-dev-roldyx
-        - name: host
-          value: portall-europe-dev-roldyx.sft-staging.com
       steps:
       - task:
           name: promote
