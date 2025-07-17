@@ -19,7 +19,7 @@ spec:
       releaseName: portall
       valueFiles:
       - values.yaml
-    path: ./helm/portall/prod
+    path: ./helm/portall/prod-roldyx
     repoURL: git@github.com:softonic-development/portall-manifests.git
     targetRevision: stage/prod-roldyx
   syncPolicy:

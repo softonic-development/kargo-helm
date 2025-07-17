@@ -23,15 +23,12 @@ spec:
     spec:
       vars:
         - name: envPath
-          value: helm/portall/prod
+          value: helm/portall/prod-roldyx
         - name: stage
-          value: prod
+          value: prod-roldyx
         - name: argocdApp
           value: portall-europe-prod-roldyx
-        - name: host
-          value: portall-europe-prod-roldyx.softonic.io
       steps:
       - task:
           name: promote
         as: promote-to-prod
-
